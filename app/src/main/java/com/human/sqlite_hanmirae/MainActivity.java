@@ -27,9 +27,9 @@ public class MainActivity extends AppCompatActivity {
         //mSQLiteDatabase 객체를 이용해서 더미데이터 insert test
         //자바의 HashMap형식과 비슷한 안드로이그 데이터형 ContentsValues형
         ContentValues contentValues = new ContentValues();
-        contentValues.put(StudentTable.GRADE,1);
-        contentValues.put(StudentTable.NUMBER,201713077);
-        contentValues.put(StudentTable.NAME,"한미래");
+        contentValues.put(StudentTable.GRADE,2);
+        contentValues.put(StudentTable.NUMBER,201713099);
+        contentValues.put(StudentTable.NAME,"아무개");
         mSqLiteDatabase.insert(StudentTable.TABLE_NAME,null, contentValues);
     }
 }
