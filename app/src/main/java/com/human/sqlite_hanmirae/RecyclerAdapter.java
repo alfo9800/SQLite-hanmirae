@@ -23,7 +23,7 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.ItemVi
 
     //멤버변수 선언
     public OnItemClickListener mOnItemClickListener;
-    private List mlist;
+    private List mList;
 
     //인터페이스 온클릭리스너에 대한 셋메서드 생성(나중에 메인액티비티에서 사용예정)
     public void setOnItemClickListener(OnItemClickListener onItemClickListener) {
@@ -41,14 +41,31 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.ItemVi
         return new ItemViewHolder(view);
     }
 
+    /*
+    온바인드홀더에서 mList값을 사용하려면, mList값을 생성.
+    생성자 메서드: 메인액티비티java에서 호출하면서 매개변수 리스트 쿼리값을 보냄.
+     */
+    public RecyclerAdapter(List itemList) {
+        mList = itemList; //현재 클래스에서 최초로 실행.
+    }
+
+    /*
+    뷰홀더와 position(pos)를 이용해서 xml디자인 textview item에 기존값 출력하기
+    개발자가 호출하는 것이 아니고, 안드로이드의 레이아웃 관리자프로그램이 자동으로 호출.
+     */
     @Override
     public void onBindViewHolder(@NonNull ItemViewHolder holder, int position) {
-
+        //개발자가 구현
+        StudentVO studentVO = (StudentVO) mList.get(position); //1개 레코드 저장
+        //리사이클러뷰의 recyclerview_item.xml디자인에 데이터를 출력함.
+        holder.itemGrade.setText(Integer.toString(studentVO.getmGrade()));
+        holder.itemNumber.setText(Integer.toString(studentVO.getmNumber()));
+        holder.itemName.setText(studentVO.getmName());
     }
 
     @Override
     public int getItemCount() {
-        return mlist.size();
+        return mList.size();
     }
     //===============================================================================================
     //중첩클래스 생성(역할: 리사이클러뷰 컴포넌트에 데이터를 홀딩시키는 클래스)
