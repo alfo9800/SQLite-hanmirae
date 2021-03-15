@@ -9,6 +9,13 @@ public class StudentVO {
     private int mNumber; //학번
     private String mName; //이름
 
+    public StudentVO(int p_id, int p_grade, int p_number, String p_name) {
+        mId = p_id;
+        mGrade = p_grade;
+        mNumber = p_number;
+        mName = p_name;
+    }
+
     //get . set
     public int getmId() {
         return mId;

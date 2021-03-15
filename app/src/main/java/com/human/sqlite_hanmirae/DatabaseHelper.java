@@ -13,7 +13,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
     //멤버변수 생성(쿼리 구문으로)
     private String CreateTableStudent = "CREATE TABLE student (" +
-            "id INTEGER PRIMARY KEY" +
+            "_id INTEGER PRIMARY KEY" +
             ",grade INTEGER" +
             ",number INTEGER" +
             ",name TEXT" +
