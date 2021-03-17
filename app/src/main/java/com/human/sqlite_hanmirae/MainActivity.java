@@ -9,6 +9,7 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
@@ -39,6 +40,10 @@ public class MainActivity extends AppCompatActivity {
     private Button mButtonInsert;
     private Button mButtonUpdate;
     private Button mButtonDelete;
+
+    //가상키보드
+    private InputMethodManager mInputMethodManager;
+
 
     //메인액티비티가 실행되면, 자동으로 실행되는 매소드 onCreate.
     @Override
@@ -86,19 +91,48 @@ public class MainActivity extends AppCompatActivity {
 
     //================================================================================================================================
 
+    private void clearComponent() {
+        //EditText객체의 값 비우기
+        mEditTextGrade.setText("");
+        mEditTextNumber.setText("");
+        mEditTextName.setText("");
+        currentCursorId = -1; //현재 테이블 커서아이디가 지워졌으니, 초기화 시킴.
+    }
+
+    //================================================================================================================================
+
     private void btnInsert() {
         mButtonInsert.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View v) {
-                if(mEditTextGrade.getText().toString() == "" || mEditTextNumber.getText().toString() == "") {
+            public void onClick(View v) { //"".equals()공백체크 && 오브젝트 == null 2개의 조건을 1개로 해결한 메서드가 isEmpty()로 개선
+                if(mEditTextGrade.getText().toString().isEmpty() || mEditTextNumber.getText().toString().isEmpty()) {
                     Toast.makeText(getApplicationContext(),"학년/학번 값은 입력 필수 입니다.",Toast.LENGTH_SHORT).show();
                     return;
                 }
                 final int grade = Integer.parseInt(mEditTextGrade.getText().toString());
                 final int number = Integer.parseInt(mEditTextNumber.getText().toString());
                 final String name = mEditTextName.getText().toString();
+
+                ContentValues contentValues = new ContentValues();
+                contentValues.put(StudentTable.GRADE,grade);
+                contentValues.put(StudentTable.NUMBER,number);
+                contentValues.put(StudentTable.NAME,name);
+
+                //Insert쿼리 호출
+                insertData(contentValues);
+                //EditText 콤포넌트 입력값 없애기
+                clearComponent();
+                //화면 리프레쉬
+                updateList();
+                //키보드 숨기기
+                mInputMethodManager.hideSoftInputFromWindow(getCurrentFocus().getWindowToken(),InputMethodManager.HIDE_NOT_ALWAYS);
             }
         });
+    }
+
+    private void insertData(ContentValues contentValues) {
+        //SQLiteDatabass 템플릿 insert메서드 실행
+        mSqLiteDatabase.insert(StudentTable.TABLE_NAME,null,contentValues);
     }
 
     //================================================================================================================================
@@ -114,15 +148,12 @@ public class MainActivity extends AppCompatActivity {
                 }
                 //삭제 쿼리 호출
                 deleteData(currentCursorId);
-
-                //EditText객체의 값 비우기
-                mEditTextGrade.setText("");
-                mEditTextNumber.setText("");
-                mEditTextName.setText("");
-                currentCursorId = -1; //현재 테이블 커서아이디가 지워졌으니, 초기화 시킴.
-
-                //리사이클러 뷰 화면 리프레쉬
+                //EditText 콤포넌트 입력값 없애기
+                clearComponent();
+                //화면 리프레쉬
                 updateList();
+                //키보드 숨기기
+                mInputMethodManager.hideSoftInputFromWindow(getCurrentFocus().getWindowToken(),InputMethodManager.HIDE_NOT_ALWAYS);
             }
         });
     }
@@ -149,8 +180,12 @@ public class MainActivity extends AppCompatActivity {
                 final String name = mEditTextName.getText().toString();
                 //쿼리 메서드 호출
                 updateData(currentCursorId,grade,number,name);
-                //화면 리프레쉬 재생
+                //EditText 콤포넌트 입력값 없애기
+                clearComponent();
+                //화면 리프레쉬
                 updateList();
+                //키보드 숨기기
+                mInputMethodManager.hideSoftInputFromWindow(getCurrentFocus().getWindowToken(),InputMethodManager.HIDE_NOT_ALWAYS);
             }
         });
     }
@@ -180,6 +215,9 @@ public class MainActivity extends AppCompatActivity {
         mButtonInsert = findViewById(R.id.btnInsert);
         mButtonUpdate = findViewById(R.id.btnUpdate);
         mButtonDelete = findViewById(R.id.btnDelete);
+
+        //키보드제어 객체 생성
+        mInputMethodManager = (InputMethodManager) getSystemService(INPUT_METHOD_SERVICE);
     }
 
     private void updateList() {
