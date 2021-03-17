@@ -16,7 +16,6 @@ public class StudentVO {
         mName = p_name;
     }
 
-    //get . set
     public int getmId() {
         return mId;
     }
